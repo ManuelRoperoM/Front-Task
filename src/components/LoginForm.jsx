@@ -9,10 +9,12 @@ import {
 } from '@chakra-ui/react'
 import { Field } from "@/components/ui/field"
 import axios from 'axios'
+import { useAuth } from '../context/AuthContext'
 
 export const LoginForm = () => {
   const nameRef = useRef(null)
   const passwordRef = useRef(null)
+  const { saveToken } = useAuth();
   const [error, setError] = useState(null)
 
   const handleSubmit = async (e) => {
@@ -25,6 +27,7 @@ export const LoginForm = () => {
         const response = await axios.post(`${ENDPOINT_BACKEND}/auth`, { name: name, password: password})
         const token = response.data.token
         console.log(token);
+        saveToken(token)
         alert('Login exitoso')
         
     } catch (error) {

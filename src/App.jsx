@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import {LoginForm} from './components/LoginForm'
+import { AuthProvider } from './context/AuthContext';
 import './App.css';
 
 function App() {
   return (
     <>
-        <LoginForm />
+        <AuthProvider>
+          <LoginForm />
+        </AuthProvider>
     </>
   )
 }

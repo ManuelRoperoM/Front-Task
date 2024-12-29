@@ -9,7 +9,6 @@ import { NativeSelectField, NativeSelectRoot } from "@/components/ui/native-sele
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogRoot, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Field } from "@/components/ui/field"
 import Swal from 'sweetalert2';
-
 import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 
 
@@ -21,6 +20,8 @@ const Tasks = () => {
   const [filter, setFilter] = useState('1')
   const titleRef = useRef(null)
   const descriptionRef = useRef(null)
+  const [updatedTitle, setUpdatedTitle] = useState("");
+  const [updatedDescription, setUpdatedDescription] = useState("");
 
 
 
@@ -106,6 +107,48 @@ const Tasks = () => {
     
   }
 
+  const updateTask = async (task) => {
+    console.log(task);
+    console.log("Updated Title:", updatedTitle);
+    console.log("Updated Description:", updatedDescription);
+
+    const ENDPOINT_BACKEND = 'http://localhost:3000'
+    try {
+        const response = await axios.put(`${ENDPOINT_BACKEND}/tasks/${task.id}`, 
+            { 
+                title: updatedTitle, 
+                description: updatedDescription
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        if (response.status === 200) {
+            setTasks((prevTasks) => prevTasks.map((t) => 
+                t.id === task.id ? { ...t, title: updatedTitle, description: updatedDescription } : t
+            ))
+            Swal.fire({
+                title: '¡Tarea actualizada con éxito!',
+                text: 'La tarea se ha actualizada correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+              });
+          }
+    } catch (error) {
+        console.error('Error actualizando tarea:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al actualizar la tarea.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+          });
+    } finally {
+        setUpdatedDescription('')
+        setUpdatedTitle('')
+    }    
+  }
+
   return (
     <>
     <h1 mb={4}><strong>Tasks</strong>Manager</h1>
@@ -172,8 +215,24 @@ const Tasks = () => {
                 </Card.Description>
               </Card.Body>
               <Card.Footer justifyContent="flex-end">
+              <PopoverRoot>
+                <PopoverTrigger asChild>
                 <Button variant="outline" color={'green.300'}><Icon path={mdiLayersEdit} size={1} /></Button>
-                <Button variant="outline" color={'red.400'}><Icon path={mdiDeleteEmpty} size={1} /></Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverBody>
+                        <Flex flexDirection={'column'} gap={2}>
+                            <PopoverTitle fontWeight="medium">UpdateTask</PopoverTitle>
+                            <Text my="4">Actualiza tu tarea</Text>
+                            <Input placeholder="Titulo" value={updatedTitle} onChange={(e) => setUpdatedTitle(e.target.value)}  size="sm" />
+                            <Input placeholder="Descripción" value={updatedDescription}  onChange={(e) => setUpdatedDescription(e.target.value)} size="sm" />
+                            <Button background="black" onClick={() => updateTask(task)} alignSelf="flex-center">Actualizar</Button>
+                        </Flex>
+                    </PopoverBody>
+                </PopoverContent>
+               </PopoverRoot>
+                <Button variant="outline" color={'red.400'}><Icon path={mdiDeleteEmpty} size={1}  /></Button>
               </Card.Footer>
             </Card.Root>
           ))}

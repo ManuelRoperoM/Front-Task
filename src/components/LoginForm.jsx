@@ -10,12 +10,14 @@ import {
 import { Field } from "@/components/ui/field"
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export const LoginForm = () => {
   const nameRef = useRef(null)
   const passwordRef = useRef(null)
   const { saveToken } = useAuth();
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -29,6 +31,8 @@ export const LoginForm = () => {
         console.log(token);
         saveToken(token)
         alert('Login exitoso')
+
+        navigate('/tasks')
         
     } catch (error) {
         setError('Credenciales incorrectas')

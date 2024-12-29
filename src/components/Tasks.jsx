@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { Card, Button, Spinner, Grid, Box, Flex } from "@chakra-ui/react"
+import React, { useEffect, useRef, useState } from 'react'
+import { Card, Button, Spinner, Grid, Box, Flex, Fieldset, Input, Text } from "@chakra-ui/react"
 import { Status } from "@/components/ui/status"
 import { useAuth } from '@/context/AuthContext'
 import axios from 'axios'
 import Icon from '@mdi/react';
 import { mdiDeleteEmpty, mdiLayersEdit, mdiFolderPlusOutline } from '@mdi/js'
-import {
-    NativeSelectField,
-    NativeSelectRoot,
-  } from "@/components/ui/native-select"
+import { NativeSelectField, NativeSelectRoot } from "@/components/ui/native-select"
+import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogRoot, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Field } from "@/components/ui/field"
+import Swal from 'sweetalert2';
+
+import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 
 
 const Tasks = () => {
@@ -17,6 +19,8 @@ const Tasks = () => {
   const [error, setError] = useState([])
   const { token } = useAuth()
   const [filter, setFilter] = useState('1')
+  const titleRef = useRef(null)
+  const descriptionRef = useRef(null)
 
 
 
@@ -28,6 +32,7 @@ const Tasks = () => {
         return;
     }
 
+    //GetTasks
     const fetchTasks = async (filterValue) => {
         try {
             const ENDPOINT_BACKEND = 'http://localhost:3000'
@@ -61,6 +66,45 @@ const Tasks = () => {
     setFilter(e.target.value);
   };
 
+  //Create Tasks
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const title = titleRef.current.value
+    const description = descriptionRef.current.value
+    const ENDPOINT_BACKEND = 'http://localhost:3000'
+    try {
+        const response = await axios.post(`${ENDPOINT_BACKEND}/tasks`, 
+            { title: title, 
+                description: description
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        if (response.status === 201) {
+            if (filter === '1' || filter === '2') {
+                setTasks((prevTasks) => [...prevTasks, response.data]);
+            }
+            Swal.fire({
+                title: '¡Tarea creada con éxito!',
+                text: 'La tarea se ha creado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+              });
+          }
+
+    } catch (error) {
+        console.error('Error creating task:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al crear la tarea.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+          });
+    }
+    
+  }
 
   return (
     <>
@@ -74,7 +118,36 @@ const Tasks = () => {
                 <option value="3">Completed</option>
             </NativeSelectField>
         </NativeSelectRoot>
-        <Button variant="outline" color={'black.300'}><Icon path={mdiFolderPlusOutline} size={1} /></Button>
+        <DialogRoot>
+            <DialogTrigger asChild>
+                <Button variant="outline" color={'black.300'}><Icon path={mdiFolderPlusOutline} size={1} /></Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Crear nueva tarea</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+            <form onSubmit={handleSubmit}>
+                <Fieldset.Root size="lg" maxW="md">
+                    <Fieldset.Content>
+                        <Field label="Title">
+                            <Input name="title" background="white" ref={titleRef}/>
+                        </Field>
+                        <Field label="Description">
+                            <Input name="description" background="white" ref={descriptionRef}/>
+                        </Field>
+                    </Fieldset.Content>
+                    <DialogTrigger asChild>
+                        <Button background="black" _hover={{ background: 'gray.700', transform: 'scale(1.05)' }} type="submit" alignSelf="flex-center">
+                            Crear
+                        </Button>
+                    </DialogTrigger>
+                </Fieldset.Root>
+            </form>
+            </DialogBody>
+        <DialogCloseTrigger />
+        </DialogContent>
+        </DialogRoot>
     </Flex>
 
     {loading ? (

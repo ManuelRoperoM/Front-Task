@@ -10,7 +10,7 @@ import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogRoot
 import { Field } from "@/components/ui/field"
 import Swal from 'sweetalert2';
 import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
-
+import { Checkbox } from "@/components/ui/checkbox"
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([])
@@ -203,6 +203,50 @@ const Tasks = () => {
         } 
     }
   }
+
+  //Cambiar el estado
+  const toggleTaskStatus = async (taskId, currentStatus) => {
+    const ENDPOINT_BACKEND = 'http://localhost:3000';
+    try {
+      const response = await axios.put(
+        `${ENDPOINT_BACKEND}/tasks/complete/${taskId}`,
+        {
+          completed: !currentStatus
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+  
+      if (response.status === 200) {
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === taskId
+              ? { ...task, completed: !currentStatus }
+              : task
+          )
+        );
+        Swal.fire({
+          title: '¡Estado actualizado!',
+          text: `La tarea ha sido marcada como ${!currentStatus ? 'Completed' : 'Pending'}.`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    } catch (error) {
+      console.error('Error cambiando estado de la tarea:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al cambiar el estado de la tarea.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+    }
+  };
+  
+
     
   return (
     <>
@@ -253,7 +297,7 @@ const Tasks = () => {
     ) : (
       <div>
         {tasks.length > 0 ? (
-        <Grid templateColumns="repeat(3, 1fr)" gap="6">
+        <Grid templateColumns="repeat(auto-fit, minmax(320px, 1fr))" gap="6">
           {tasks.map((task, index) => (
             <Card.Root key={index} width="320px">
                    <Box position="absolute" top="1" right="2">
@@ -270,6 +314,12 @@ const Tasks = () => {
                 </Card.Description>
               </Card.Body>
               <Card.Footer justifyContent="flex-end">
+              <Checkbox
+                checked={task.completed}
+                onChange={() => toggleTaskStatus(task.id, task.completed)} // Llamamos a la función
+              >
+                Marcar como Completed
+              </Checkbox>
               <PopoverRoot>
                 <PopoverTrigger asChild>
                 <Button variant="outline" color={'green.300'}><Icon path={mdiLayersEdit} size={1} /></Button>

@@ -28,10 +28,7 @@ export const LoginForm = () => {
     try {
         const response = await axios.post(`${ENDPOINT_BACKEND}/auth`, { name: name, password: password})
         const token = response.data.token
-        console.log(token);
         saveToken(token)
-        alert('Login exitoso')
-
         navigate('/tasks')
         
     } catch (error) {

@@ -38,14 +38,10 @@ const Tasks = () => {
     //GetTasks
     const fetchTasks = async (filterValue) => {
         try {
-            let url = ENDPOINT_BACKEND
-            console.log(filterValue);
-            
+            let url = ENDPOINT_BACKEND     
             if (filterValue === '1') url = url+'/tasks'
             if (filterValue === '2') url = url+'/tasks/filter?taskStatus=pending'
             if (filterValue === '3') url = url+'/tasks/filter?taskStatus=completed'
-            console.log("Token: ",token);
-            
             const response = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -54,9 +50,7 @@ const Tasks = () => {
             setTasks(response.data)
             setLoading(false)
             
-        } catch (error) {
-            console.log(error);
-            
+        } catch (error) {  
             setError('Error a cargar los datos')
             setLoading(false)
         }

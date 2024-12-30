@@ -11,6 +11,7 @@ import { Field } from "@/components/ui/field"
 import Swal from 'sweetalert2';
 import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTitle, PopoverTrigger } from "@/components/ui/popover"
 import { Checkbox } from "@/components/ui/checkbox"
+import "./tasks.css"
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([])
@@ -38,14 +39,10 @@ const Tasks = () => {
     //GetTasks
     const fetchTasks = async (filterValue) => {
         try {
-            let url = ENDPOINT_BACKEND
-            console.log(filterValue);
-            
+            let url = ENDPOINT_BACKEND     
             if (filterValue === '1') url = url+'/tasks'
             if (filterValue === '2') url = url+'/tasks/filter?taskStatus=pending'
             if (filterValue === '3') url = url+'/tasks/filter?taskStatus=completed'
-            console.log("Token: ",token);
-            
             const response = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -54,9 +51,7 @@ const Tasks = () => {
             setTasks(response.data)
             setLoading(false)
             
-        } catch (error) {
-            console.log(error);
-            
+        } catch (error) {  
             setError('Error a cargar los datos')
             setLoading(false)
         }
@@ -292,11 +287,11 @@ const Tasks = () => {
     {loading ? (
       <div><Spinner size="sm" /></div>
     ) : (
-      <div>
+      <Box>
         {tasks.length > 0 ? (
-        <Grid templateColumns="repeat(auto-fit, minmax(320px, 1fr))" gap="6">
+        <Grid className='wrapper_grid' templateColumns="repeat(auto-fit, minmax(320px, 1fr))" gap="6">
           {tasks.map((task, index) => (
-            <Card.Root key={index} width="320px">
+            <Card.Root className='children_grid' key={index} width="320px">
                    <Box position="absolute" top="1" right="2">
                     {task.completed ? (
                     <Status value="success">Completed</Status>
@@ -342,7 +337,7 @@ const Tasks = () => {
         ) : (
           <p>No hay tareas disponibles</p>
         )}
-      </div>
+      </Box>
     )}
     </>
   )

@@ -1,0 +1,19 @@
+.wrapper_grid {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.children_grid {
+    margin: 1rem;
+    width: 300px;
+}
+
+.wrapped_login {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}

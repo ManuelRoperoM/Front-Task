@@ -7,11 +7,6 @@ import Tasks from './components/Tasks';
 
 function App() {
   return (
-    // <>
-    //     <AuthProvider>
-    //       <LoginForm />
-    //     </AuthProvider>
-    // </>
     <AuthProvider>
       <Router>
         <Routes>

@@ -5,12 +5,14 @@ import {
   Center,
   Fieldset,
   Stack,
-  Input
+  Input,
+  Flex
 } from '@chakra-ui/react'
 import { Field } from "@/components/ui/field"
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import "./tasks.css"
 
 export const LoginForm = () => {
   const nameRef = useRef(null)
@@ -43,7 +45,8 @@ export const LoginForm = () => {
   }
 
   return (
-    <Center background='gray.100' p={4}> 
+    <div className='wrapped_login' background="red" width="100%" height="100%">
+    <Center minWidth={500} width="80%" height={300} background='gray.100' p={4}> 
         <form onSubmit={handleSubmit}>
             <Fieldset.Root size="lg" maxW="md">
                 <Stack>
@@ -66,5 +69,6 @@ export const LoginForm = () => {
             </Fieldset.Root>
         </form>
     </Center>
+    </div>
   )
 }

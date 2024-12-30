@@ -24,7 +24,7 @@ export const LoginForm = () => {
 
     const name = nameRef.current.value
     const password = passwordRef.current.value
-    const ENDPOINT_BACKEND = 'http://localhost:3000'
+    const ENDPOINT_BACKEND = import.meta.env.VITE_ENDPOINT_BACKEND
     try {
         const response = await axios.post(`${ENDPOINT_BACKEND}/auth`, { name: name, password: password})
         const token = response.data.token

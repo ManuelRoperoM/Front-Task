@@ -23,6 +23,8 @@ const Tasks = () => {
   const [updatedTitle, setUpdatedTitle] = useState("");
   const [updatedDescription, setUpdatedDescription] = useState("");
 
+  const ENDPOINT_BACKEND = import.meta.env.VITE_ENDPOINT_BACKEND
+
 
 
   useEffect(()=> {
@@ -36,7 +38,6 @@ const Tasks = () => {
     //GetTasks
     const fetchTasks = async (filterValue) => {
         try {
-            const ENDPOINT_BACKEND = 'http://localhost:3000'
             let url = ENDPOINT_BACKEND
             console.log(filterValue);
             
@@ -72,7 +73,6 @@ const Tasks = () => {
     e.preventDefault()
     const title = titleRef.current.value
     const description = descriptionRef.current.value
-    const ENDPOINT_BACKEND = 'http://localhost:3000'
     try {
         const response = await axios.post(`${ENDPOINT_BACKEND}/tasks`, 
             { title: title, 
@@ -109,7 +109,6 @@ const Tasks = () => {
 
   //Actualizar
   const updateTask = async (task) => {
-    const ENDPOINT_BACKEND = 'http://localhost:3000'
     try {
         const response = await axios.put(`${ENDPOINT_BACKEND}/tasks/${task.id}`, 
             { 
@@ -156,7 +155,6 @@ const Tasks = () => {
 
   //Eliminar
   const deleteTask = async (task) => {
-    const ENDPOINT_BACKEND = 'http://localhost:3000'
     const result = await Swal.fire({
         title: '¿Estás seguro?',
         text: '¡Esta acción no se puede deshacer!',
@@ -206,7 +204,6 @@ const Tasks = () => {
 
   //Cambiar el estado
   const toggleTaskStatus = async (taskId, currentStatus) => {
-    const ENDPOINT_BACKEND = 'http://localhost:3000';
     try {
       const response = await axios.put(
         `${ENDPOINT_BACKEND}/tasks/complete/${taskId}`,

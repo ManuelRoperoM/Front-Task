@@ -136,13 +136,21 @@ const Tasks = () => {
               });
           }
     } catch (error) {
-        console.error('Error actualizando tarea:', error);
-        Swal.fire({
-            title: 'Error',
-            text: 'Hubo un problema al actualizar la tarea.',
-            icon: 'error',
-            confirmButtonText: 'Aceptar',
-          });
+        if (updatedTitle) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al actualizar la tarea.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+              });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'El titulo no puede estar vacio.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+              });
+        }
     } finally {
         setUpdatedDescription('')
         setUpdatedTitle('')

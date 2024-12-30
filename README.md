@@ -45,25 +45,26 @@ npm run build
 
 Para acceder a la aplicación como evaluador, utiliza las siguientes credenciales:
 
-Usuario: Administrador
-Contraseña: admin123
-Por favor, recuerda que estas credenciales son solo para propósitos de prueba y no deben usarse en entornos de producción.
+- **Usuario**: Administrador
+- **Contraseña**: admin123
+
 
 ## 📚 Dependencias principales
 
 Este proyecto utiliza las siguientes tecnologías y herramientas:
 
-React: Biblioteca para crear interfaces de usuario.
-Vite: Herramienta rápida para desarrollo y compilación.
-Axios: Cliente HTTP para realizar peticiones al backend.
-ESLint: Herramienta de análisis estático para mantener un código limpio y consistente.
+- **React**: Biblioteca para crear interfaces de usuario.
+- **Vite:** Herramienta rápida para desarrollo y compilación.
+- **Axios:** Cliente HTTP para realizar peticiones al backend.
+- **Chakra:** Framework CSS
 
 ## 📂 Estructura del proyecto
 
+```
 src/
 ├── components/    # Componentes reutilizables de React
         ├──tasksComponents # Componentes creados para Tasks
         ├──ui #Componentes de Chakra UI
 ├── App.jsx        # Componente principal de la aplicación
 ├── main.jsx       # Punto de entrada de la aplicación
-
+```

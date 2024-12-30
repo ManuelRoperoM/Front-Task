@@ -107,11 +107,8 @@ const Tasks = () => {
     
   }
 
+  //Actualizar
   const updateTask = async (task) => {
-    console.log(task);
-    console.log("Updated Title:", updatedTitle);
-    console.log("Updated Description:", updatedDescription);
-
     const ENDPOINT_BACKEND = 'http://localhost:3000'
     try {
         const response = await axios.put(`${ENDPOINT_BACKEND}/tasks/${task.id}`, 
@@ -157,6 +154,56 @@ const Tasks = () => {
     }    
   }
 
+  //Eliminar
+  const deleteTask = async (task) => {
+    const ENDPOINT_BACKEND = 'http://localhost:3000'
+    const result = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: '¡Esta acción no se puede deshacer!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      });
+    if (result.isConfirmed) {
+        try {
+    
+            const response = await axios.delete(`${ENDPOINT_BACKEND}/tasks/${task.id}`, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+            if (response.status === 200) {
+                setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
+                Swal.fire({
+                    title: '¡Tarea eliminada con éxito!',
+                    text: 'La tarea se ha eliminado correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                  });
+              }
+        } catch (error) {
+            if (updatedTitle) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al actualizar la tarea.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar',
+                  });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'El titulo no puede estar vacio.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar',
+                  });
+            }
+        } 
+    }
+  }
+    
   return (
     <>
     <h1 mb={4}><strong>Tasks</strong>Manager</h1>
@@ -240,7 +287,7 @@ const Tasks = () => {
                     </PopoverBody>
                 </PopoverContent>
                </PopoverRoot>
-                <Button variant="outline" color={'red.400'}><Icon path={mdiDeleteEmpty} size={1}  /></Button>
+                <Button variant="outline" color={'red.400'} onClick={() => deleteTask(task)}><Icon path={mdiDeleteEmpty} size={1}  /></Button>
               </Card.Footer>
             </Card.Root>
           ))}
@@ -253,6 +300,4 @@ const Tasks = () => {
     </>
   )
 }
-
-
 export default Tasks;
